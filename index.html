@@ -1,107 +1,133 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LDR ESCAPE V5 - Nama & Emot</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>LDR ESCAPE - VERSI LENGKAP MIMIN & ZY</title>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <style>
-body{margin:0;color:#fff;font-family:Arial;text-align:center;transition:0.5s;background:#0a0a0a}
-#menu{background:#1e1e1e;padding:20px;max-width:480px;margin:15px auto;border-radius:12px;border:1px solid #333}
-input,button,select{padding:10px;width:92%;margin:4px 0;border-radius:8px;border:none}
-button{background:#00ff88;color:#000;font-weight:bold;cursor:pointer}
-.btnBlue{background:#0088ff;color:#fff}.btnOrange{background:#ffaa00}
-#gameWrap{display:none;max-width:900px;margin:0 auto}
-canvas{border:2px solid #00ff88;border-radius:10px;margin-top:5px}
-#uiBar{display:flex;justify-content:space-between;flex-wrap:wrap;padding:8px;background:rgba(0,0,0,0.7);border-radius:8px;font-size:12px;gap:5px}
-#chatBox{background:rgba(0,0,0,0.8);height:80px;overflow-y:auto;text-align:left;padding:8px;border-radius:8px;margin-top:5px;font-size:13px}
-#emotBar{display:flex;gap:5px;justify-content:center;margin-top:5px;flex-wrap:wrap}
-#emotBar button{width:auto;padding:8px 12px;font-size:20px;background:#222;border:1px solid #444}
-#musicBar{background:rgba(0,0,0,0.7);padding:6px;border-radius:8px;margin-top:5px;font-size:12px;display:flex;gap:5px;align-items:center;justify-content:center;flex-wrap:wrap}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(135deg,#ff6a88,#ff99ac);color:#fff;font-family:Arial;overflow-x:hidden;transition:0.5s}
+#lobby{max-width:450px;margin:20px auto;background:#1e1e1e;padding:20px;border-radius:15px;border:1px solid #444;text-align:center}
+input{width:92%;padding:12px;margin:5px 0;border-radius:10px;border:none}
+button{padding:12px;width:92%;margin:5px 0;border-radius:10px;border:none;font-weight:bold;cursor:pointer}
+.btn-green{background:#00ff88;color:#000}.btn-blue{background:#0088ff;color:#fff}.btn-orange{background:#ffaa00}
+#game{display:none;max-width:850px;margin:0 auto;padding:5px}
+#topBar{display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,0.7);padding:8px 12px;border-radius:10px;font-size:13px;flex-wrap:wrap;gap:5px}
+canvas{background:#111;border:3px solid #00ff88;border-radius:12px;width:100%;height:55vh;display:block;margin:8px 0}
+#controls{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+#chatBox{background:rgba(0,0,0,0.8);height:90px;overflow-y:auto;text-align:left;padding:8px;border-radius:10px;font-size:13px}
+#emotRow{display:flex;gap:4px;flex-wrap:wrap;justify-content:center}
+#emotRow button{width:44px;padding:8px;font-size:18px;background:#222;border:1px solid #444}
+#joy{position:fixed;bottom:20px;left:20px;width:110px;height:110px;background:rgba(0,0,0,0.35);border-radius:50%;z-index:99;touch-action:none}
+#stick{width:50px;height:50px;background:#00ff88;border-radius:50%;position:absolute;left:30px;top:30px}
 </style>
 </head>
-<body id="bodyBg">
-<div id="menu">
-<h1>🎮 LDR ESCAPE V5 ❤️</h1>
-<p>Nama + Emot + BG + Chat + Music</p>
-<input id="myName" placeholder="Nama Lu (contoh: Aku / Abang)" value="Aku">
-<input id="friendNameInput" placeholder="Nama Doi (contoh: Ayang / Beb)" value="Ayang">
-<br>
-<button onclick="createRoom()">BUAT ROOM</button>
-<p id="myId" style="color:#00ff88;word-break:break-all"></p>
-<input id="joinId" placeholder="Kode Room Temen">
-<button class="btnBlue" onclick="joinRoom()">GABUNG</button>
+<body id="bg">
+
+<div id="lobby">
+<h2>🎮 KITA SELESAIKAN RINTANGANNYA SAYANG 🥰</h2>
+<input id="myName" placeholder="Nama kamu (Aku)" value="Mimin">
+<input id="herName" placeholder="Nama doi (Ayang)" value="Zy">
+<button class="btn-green" onclick="createRoom()">BUAT ROOM BARU</button>
+<p id="myId" style="color:#00ff88;word-break:break-all;font-size:14px"></p>
+<input id="joinId" placeholder="Tempel Kode Room Temen">
+<button class="btn-blue" onclick="joinRoom()">GABUNG ROOM</button>
 <p id="status">Belum connect</p>
-<button id="micBtn" style="display:none" class="btnOrange" onclick="toggleMic()">🎤 MIC</button>
+<button id="micBtn" class="btn-orange" style="display:none" onclick="toggleMic()">🎤 NYALAIN MIC + BACKSOUND</button>
+<p style="font-size:11px;color:#aaa">Habis buat room, share Kode + Link game ke doi</p>
 </div>
 
-<div id="gameWrap">
-<div id="uiBar">
-<div>LVL <span id="lvl">1</span>/10 | <span id="gameStatus">...</span></div>
-<div>BG: <button onclick="setBg(0)">🌌</button><button onclick="setBg(1)">🌲</button><button onclick="setBg(2)">🌃</button><button onclick="setBg(4)">❤️</button></div>
+<div id="game">
+<div id="topBar">
+<div>LVL <b id="lvl">1</b>/10 | <span id="msg">Injak hijau berdua!</span></div>
+<div>BG: <button onclick="setBg(0)" style="width:auto;padding:4px 8px">🌌</button><button onclick="setBg(1)" style="width:auto;padding:4px 8px">🌃</button><button onclick="setBg(2)" style="width:auto;padding:4px 8px">❤️</button></div>
+<div>🎵 <select id="musicSel" onchange="changeMusic()" style="padding:4px"><option value="0">Lofi Chill</option><option value="1">Romantic</option><option value="2">Epic</option><option value="3">Off</option></select> <button id="musicBtn" onclick="toggleMusic()" style="width:auto;padding:4px 8px">⏸️</button></div>
 </div>
-<div id="musicBar">
-🎵 <select id="musicSelect" onchange="changeMusic()"><option value="0">Lofi</option><option value="1">Romantic</option><option value="2">Epic</option><option value="3">No Music</option></select>
-<button onclick="toggleMusic()" id="musicBtn" style="width:auto">⏸️</button>
-Vol: <input type="range" id="vol" min="0" max="1" step="0.1" value="0.4" style="width:60px" oninput="setVol(this.value)">
+
+<canvas id="c" width="800" height="450"></canvas>
+
+<div id="emotRow">
+<button onclick="sendEmot('❤️')">❤️</button><button onclick="sendEmot('😘')">😘</button><button onclick="sendEmot('🥺')">🥺</button><button onclick="sendEmot('😂')">😂</button><button onclick="sendEmot('😭')">😭</button><button onclick="sendEmot('🔥')">🔥</button><button onclick="sendEmot('👉👈')">👉👈</button><button onclick="sendEmot('KANGEN')">💌</button>
 </div>
-<canvas id="c" width="800" height="400"></canvas>
-<div id="emotBar">
-<button onclick="sendEmot('❤️')">❤️</button><button onclick="sendEmot('😘')">😘</button><button onclick="sendEmot('😂')">😂</button><button onclick="sendEmot('😭')">😭</button><button onclick="sendEmot('😡')">😡</button><button onclick="sendEmot('🥺')">🥺</button><button onclick="sendEmot('🔥')">🔥</button><button onclick="sendEmot('💀')">💀</button><button onclick="sendEmot('👉👈')">👉👈</button><button onclick="sendEmot('SEMANGAT!')">💪</button>
-</div>
+
+<div id="controls">
 <div id="chatBox"></div>
-<div><input id="chatInput" placeholder="Ketik pesan..." style="width:70%"><button style="width:25%" onclick="sendChat()">Kirim</button></div>
-<audio id="remoteAudio" autoplay></audio><audio id="bgm" loop></audio>
+<div><input id="chatIn" placeholder="Ketik pesan sayang..." style="width:100%"><button class="btn-green" onclick="sendChat()" style="width:100%;padding:8px;margin-top:4px">Kirim Chat</button></div>
 </div>
+<audio id="remoteAudio" autoplay></audio>
+<audio id="bgm" loop></audio>
+</div>
+
+<div id="joy"><div id="stick"></div></div>
 
 <script>
-const bgs=["radial-gradient(circle at center, #1a1a40 0%, #000 100%)","linear-gradient(180deg, #2d4a22 0%, #1a2f12 100%)","linear-gradient(135deg, #0f0c29, #302b63, #24243e)","linear-gradient(180deg, #c19a6b 0%, #8b5a2b 100%)","linear-gradient(135deg, #ff6a88 0%, #ff99ac 100%)"];
+const bgs=["linear-gradient(135deg,#0f0c29,#302b63,#24243e)","linear-gradient(135deg,#1a1a40,#000)","linear-gradient(135deg,#ff6a88,#ff99ac)"];
 const musics=["https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3","https://cdn.pixabay.com/download/audio/2022/10/30/audio_8ef11c7db3.mp3?filename=romantic-piano-126317.mp3","https://cdn.pixabay.com/download/audio/2022/03/10/audio_c8c8a650f6.mp3?filename=epic-110846.mp3"];
-let bgm=document.getElementById("bgm"), isMusicPlaying=false, myName="Aku", friendName="Ayang";
-let myEmot="", friendEmot="", emotTimer=0, friendEmotTimer=0;
-function changeMusic(){let v=document.getElementById("musicSelect").value; if(v==3){bgm.pause(); isMusicPlaying=false; return;} bgm.src=musics[v]; bgm.volume=document.getElementById("vol").value; bgm.play(); isMusicPlaying=true; if(conn) conn.send({music:v});}
-function toggleMusic(){if(isMusicPlaying){bgm.pause(); isMusicPlaying=false;}else{bgm.play(); isMusicPlaying=true;}}
-function setVol(v){bgm.volume=v;}
-function setBg(i){document.getElementById("bodyBg").style.background=bgs[i]; if(conn) conn.send({bg:i});}
-function sendEmot(e){ myEmot=e; emotTimer=180; if(conn) conn.send({emot:e}); addChat(myName+": "+e,"#ff88ff"); }
+let bgm=document.getElementById("bgm"), isMusic=false, myName="Mimin", herName="Zy", myEmot="", fEmot="", myEmotT=0, fEmotT=0;
+function setBg(i){document.getElementById("bg").style.background=bgs[i]; if(conn&&conn.open) conn.send({bg:i});}
+function changeMusic(){let v=document.getElementById("musicSel").value; if(v==3){bgm.pause(); isMusic=false; return;} bgm.src=musics[v]; bgm.play().catch(()=>{}); isMusic=true; if(conn) conn.send({music:v});}
+function toggleMusic(){if(isMusic){bgm.pause(); isMusic=false; document.getElementById("musicBtn").innerText="▶️";}else{bgm.play(); isMusic=true; document.getElementById("musicBtn").innerText="⏸️";}}
 
-let peer,conn,call,localStream,myPos={x:40,y:40},friendPos={x:740,y:350},keys={},level=1,gameStarted=false;
-let enemies=[{x:300,y:200,vx:2,vy:1.5},{x:500,y:300,vx:-2,vy:1.5},{x:400,y:100,vx:1,vy:-2}];
-const levels=[{w:[{x:0,y:190,w:300,h:12},{x:500,y:190,w:300,h:12}],b:{x:380,y:90,w:40,h:40}},{w:[{x:200,y:0,w:12,h:250},{x:600,y:150,w:12,h:250}],b:{x:80,y:80,w:40,h:40}},{w:[{x:0,y:120,w:550,h:12},{x:250,y:280,w:550,h:12}],b:{x:700,y:60,w:40,h:40}},{w:[{x:150,y:70,w:500,h:12},{x:150,y:300,w:500,h:12}],b:{x:380,y:170,w:40,h:40}},{w:[{x:0,y:180,w:200,h:12},{x:600,y:180,w:200,h:12},{x:390,y:0,w:12,h:180}],b:{x:400,y:260,w:40,h:40}},{w:[{x:200,y:0,w:12,h:330},{x:400,y:70,w:12,h:330},{x:600,y:0,w:12,h:330}],b:{x:700,y:340,w:40,h:40}},{w:[{x:100,y:70,w:600,h:12},{x:100,y:320,w:600,h:12},{x:390,y:70,w:12,h:250}],b:{x:50,y:50,w:40,h:40}},{w:[{x:0,y:200,w:250,h:12},{x:550,y:200,w:250,h:12}],b:{x:380,y:10,w:40,h:40}},{w:[{x:100,y:70,w:600,h:12},{x:100,y:320,w:600,h:12}],b:{x:380,y:180,w:50,h:50}},{w:[{x:0,y:190,w:800,h:12}],b:{x:380,y:90,w:50,h:50}}];
+const levels=[
+{w:[{x:0,y:200,w:300,h:14},{x:500,y:200,w:300,h:14}],b:{x:375,y:80,w:50,h:50}},
+{w:[{x:200,y:0,w:14,h:260},{x:600,y:190,w:14,h:260}],b:{x:80,y:80,w:50,h:50}},
+{w:[{x:0,y:130,w:550,h:14},{x:250,y:320,w:550,h:14}],b:{x:700,y:60,w:50,h:50}},
+{w:[{x:150,y:80,w:500,h:14},{x:150,y:350,w:500,h:14}],b:{x:375,y:190,w:50,h:50}},
+{w:[{x:0,y:190,w:200,h:14},{x:600,y:190,w:200,h:14},{x:393,y:0,w:14,h:190}],b:{x:400,y:280,w:50,h:50}},
+{w:[{x:200,y:0,w:14,h:350},{x:400,y:100,w:14,h:350},{x:600,y:0,w:14,h:350}],b:{x:700,y:360,w:50,h:50}},
+{w:[{x:100,y:80,w:600,h:14},{x:100,y:360,w:600,h:14},{x:393,y:80,w:14,h:280}],b:{x:50,y:50,w:50,h:50}},
+{w:[{x:0,y:210,w:250,h:14},{x:550,y:210,w:250,h:14}],b:{x:375,y:20,w:50,h:50}},
+{w:[{x:200,y:130,w:400,h:14},{x:200,y:320,w:400,h:14},{x:200,y:130,w:14,h:190}],b:{x:650,y:200,w:50,h:50}},
+{w:[{x:100,y:80,w:600,h:14},{x:100,y:360,w:600,h:14}],b:{x:375,y:200,w:60,h:60},boss:true},
+];
 
-function createRoom(){ myName=document.getElementById("myName").value||"Aku"; friendName=document.getElementById("friendNameInput").value||"Ayang"; peer=new Peer(); peer.on('open',id=>{document.getElementById("myId").innerHTML="KODE:<br><b style='font-size:26px'>"+id+"</b>"; document.getElementById("status").innerText="Share!"; bgm.src=musics[0]; bgm.play().catch(()=>{});}); peer.on('connection',c=>{conn=c; setup();}); peer.on('call',async c=>{const s=await navigator.mediaDevices.getUserMedia({audio:true}); c.answer(s); c.on('stream',rs=>{document.getElementById("remoteAudio").srcObject=rs;});});}
-function joinRoom(){ myName=document.getElementById("myName").value||"Aku"; let id=document.getElementById("joinId").value.trim(); if(!id) return alert("Kode kosong"); peer=new Peer(); peer.on('open',()=>{conn=peer.connect(id); setup(); bgm.src=musics[0]; bgm.play().catch(()=>{});});}
-function setup(){conn.on('open',()=>{document.getElementById("menu").style.display="none"; document.getElementById("gameWrap").style.display="block"; if(isHost) conn.send({friendName:myName}); gameStarted=true; loop(); addChat("Connected sebagai "+myName,"#00ff88");}); conn.on('data',d=>{if(d.pos) friendPos=d.pos; if(d.lvl){level=d.lvl; document.getElementById("lvl").innerText=level;} if(d.reset) resetPos(); if(d.bg!=undefined) document.getElementById("bodyBg").style.background=bgs[d.bg]; if(d.music!=undefined){bgm.src=musics[d.music]; bgm.play();} if(d.chat) addChat(friendName+": "+d.chat,"#88aaff"); if(d.emot){friendEmot=d.emot; friendEmotTimer=180; addChat(friendName+": "+d.emot,"#ff88ff");} if(d.myName){friendName=d.myName;} if(d.friendName){} });}
-function addChat(t,c="#fff"){let b=document.getElementById("chatBox"); b.innerHTML+=`<div style="color:${c}">${t}</div>`; b.scrollTop=b.scrollHeight;}
-function sendChat(){let i=document.getElementById("chatInput"); if(!i.value) return; addChat(myName+": "+i.value,"#00ff88"); if(conn) conn.send({chat:i.value, myName:myName}); i.value="";}
-document.getElementById("chatInput").addEventListener("keydown",e=>{if(e.key=="Enter") sendChat();});
-async function toggleMic(){try{localStream=await navigator.mediaDevices.getUserMedia({audio:true}); call=peer.call(conn.peer,localStream); call.on('stream',rs=>{document.getElementById("remoteAudio").srcObject=rs;}); document.getElementById("micBtn").innerText="✅ MIC ON";}catch(e){alert("Allow mic");}}
+let peer,conn,call,myPos={x:40,y:40},friendPos={x:740,y:380},keys={},level=1,gameOn=false;
+let enemies=[{x:300,y:200,vx:2,vy:1.5},{x:500,y:300,vx:-2,vy:1.5},{x:400,y:120,vx:1.5,vy:-1.5}];
+
+function createRoom(){myName=document.getElementById("myName").value||"Mimin"; herName=document.getElementById("herName").value||"Zy"; peer=new Peer(); peer.on('open',id=>{document.getElementById("myId").innerHTML="KODE ROOM:<br><b style='font-size:24px;letter-spacing:2px'>"+id+"</b><br>Share kode ini ke Zy!"; document.getElementById("status").innerText="Kode jadi! Share ke doi!"; document.getElementById("micBtn").style.display="block"; bgm.src=musics[0]; bgm.volume=0.5; bgm.play().catch(()=>{}); isMusic=true;}); peer.on('connection',c=>{conn=c; setupConn(true);}); peer.on('call',async c=>{let s=await navigator.mediaDevices.getUserMedia({audio:true}); c.answer(s); c.on('stream',r=>{document.getElementById("remoteAudio").srcObject=r;});});}
+function joinRoom(){myName=document.getElementById("myName").value||"Zy"; let id=document.getElementById("joinId").value.trim(); if(!id) return alert("Masukin kode!"); peer=new Peer(); peer.on('open',()=>{conn=peer.connect(id); setupConn(false); bgm.src=musics[1]; bgm.volume=0.5; bgm.play().catch(()=>{}); isMusic=true;});}
+function setupConn(isHost){conn.on('open',()=>{document.getElementById("lobby").style.display="none"; document.getElementById("game").style.display="block"; gameOn=true; if(isHost) conn.send({herName:myName}); addChat("System: Connected! Semangat "+myName+" & "+herName+" ❤️","#00ff88"); loop();}); conn.on('data',d=>{if(d.pos) friendPos=d.pos; if(d.lvl){level=d.lvl; document.getElementById("lvl").innerText=level;} if(d.reset){myPos={x:40,y:40};} if(d.bg!=undefined) document.getElementById("bg").style.background=bgs[d.bg]; if(d.music!=undefined){bgm.src=musics[d.music]; bgm.play();} if(d.chat) addChat(d.name+": "+d.chat,"#88aaff"); if(d.emot){fEmot=d.emot; fEmotT=150; addChat(d.name+": "+d.emot,"#ff88ff");} if(d.herName) herName=d.herName;});}
+
+function addChat(t,c="#fff"){let b=document.getElementById("chatBox"); b.innerHTML+=`<div style="color:${c};margin:2px 0">${t}</div>`; b.scrollTop=b.scrollHeight;}
+function sendChat(){let i=document.getElementById("chatIn"); if(!i.value) return; addChat(myName+": "+i.value,"#00ff88"); if(conn) conn.send({chat:i.value,name:myName}); i.value="";}
+function sendEmot(e){myEmot=e; myEmotT=150; addChat(myName+": "+e,"#ff88ff"); if(conn) conn.send({emot:e,name:myName});}
+
+document.getElementById("chatIn").addEventListener("keydown",e=>{if(e.key=="Enter") sendChat();});
+async function toggleMic(){try{let s=await navigator.mediaDevices.getUserMedia({audio:true}); call=peer.call(conn.peer,s); call.on('stream',r=>{document.getElementById("remoteAudio").srcObject=r;}); document.getElementById("micBtn").innerText="✅ MIC & MUSIC ON"; addChat("Voice nyala! Bisa ngobrol!","#ffaa00");}catch{alert("Allow mic dulu");}}
+
 document.addEventListener("keydown",e=>keys[e.key.toLowerCase()]=true); document.addEventListener("keyup",e=>keys[e.key.toLowerCase()]=false);
-function resetPos(){myPos={x:40,y:40}; friendPos={x:740,y:350};}
+// joystick
+let joy=document.getElementById("joy"), stick=document.getElementById("stick"), dragging=false;
+joy.addEventListener("touchstart",e=>dragging=true); joy.addEventListener("touchend",e=>{dragging=false; keys={}; stick.style.left="30px"; stick.style.top="30px";});
+joy.addEventListener("touchmove",e=>{if(!dragging) return; let t=e.touches[0], rect=joy.getBoundingClientRect(), cx=rect.left+55, cy=rect.top+55, dx=t.clientX-cx, dy=t.clientY-cy, dist=Math.min(40,Math.hypot(dx,dy)), ang=Math.atan2(dy,dx); stick.style.left=30+Math.cos(ang)*dist+"px"; stick.style.top=30+Math.sin(ang)*dist+"px"; keys={}; if(dy<-15)keys["w"]=true; if(dy>15)keys["s"]=true; if(dx<-15)keys["a"]=true; if(dx>15)keys["d"]=true; e.preventDefault();},{passive:false});
+
 function loop(){
- let sp=4; if(keys["w"]) myPos.y-=sp; if(keys["s"]) myPos.y+=sp; if(keys["a"]) myPos.x-=sp; if(keys["d"]) myPos.x+=sp; myPos.x=Math.max(0,Math.min(778,myPos.x)); myPos.y=Math.max(0,Math.min(378,myPos.y));
- if(conn&&conn.open) conn.send({pos:myPos, myName:myName});
+ let sp=5; if(keys["w"]) myPos.y-=sp; if(keys["s"]) myPos.y+=sp; if(keys["a"]) myPos.x-=sp; if(keys["d"]) myPos.x+=sp; myPos.x=Math.max(0,Math.min(770,myPos.x)); myPos.y=Math.max(0,Math.min(420,myPos.y));
+ if(conn&&conn.open) conn.send({pos:myPos});
  let map=levels[level-1];
- enemies.forEach(en=>{ en.x+=en.vx; en.y+=en.vy; if(en.x<0||en.x>760) en.vx*=-1; if(en.y<0||en.y>380) en.vy*=-1; if(Math.hypot(myPos.x-en.x, myPos.y-en.y)<28){ addChat("Kena musuh!","#ff4444"); resetPos(); if(conn) conn.send({reset:1}); }});
- const ctx=document.getElementById("c").getContext("2d"); ctx.clearRect(0,0,800,400);
- ctx.fillStyle="rgba(50,50,50,0.8)"; map.w.forEach(w=>ctx.fillRect(w.x,w.y,w.w,w.h));
- let onMe=myPos.x>map.b.x-20&&myPos.x<map.b.x+map.b.w+20&&myPos.y>map.b.y-20&&myPos.y<map.b.y+map.b.h+20;
- let onFr=friendPos.x>map.b.x-20&&friendPos.x<map.b.x+map.b.w+20&&friendPos.y>map.b.y-20&&friendPos.y<map.b.y+map.b.h+20;
+ enemies.forEach(en=>{en.x+=en.vx; en.y+=en.vy; if(en.x<0||en.x>770) en.vx*=-1; if(en.y<0||en.y>420) en.vy*=-1; if(Math.hypot(myPos.x-en.x,myPos.y-en.y)<30){addChat("Aduh kena musuh! Ulang!","#ff4444"); myPos={x:40,y:40}; if(conn) conn.send({reset:1});}});
+ const ctx=document.getElementById("c").getContext("2d"); ctx.fillStyle="#111"; ctx.fillRect(0,0,800,450);
+ ctx.fillStyle="#333"; map.w.forEach(w=>ctx.fillRect(w.x,w.y,w.w,w.h));
+ let onMe=myPos.x>map.b.x-20&&myPos.x<map.b.x+70&&myPos.y>map.b.y-20&&myPos.y<map.b.y+70;
+ let onFr=friendPos.x>map.b.x-20&&friendPos.x<map.b.x+70&&friendPos.y>map.b.y-20&&friendPos.y<map.b.y+70;
  let open=onMe&&onFr;
- ctx.fillStyle=open?"#00ff88":"#00cc66"; ctx.fillRect(map.b.x,map.b.y,map.b.w,map.b.h);
- if(!open){ ctx.fillStyle="#ff0033"; ctx.fillRect(390,180,20,60); }
- ctx.fillStyle="gold"; ctx.fillRect(730,10,50,35); ctx.fillStyle="#000"; ctx.font="11px Arial"; ctx.fillText("EXIT",740,32);
- // player + nama
- ctx.fillStyle="#ff4444"; ctx.fillRect(myPos.x,myPos.y,22,22); ctx.fillStyle="#fff"; ctx.font="bold 12px Arial"; ctx.fillText(myName, myPos.x-5, myPos.y-8);
- ctx.fillStyle="#4444ff"; ctx.fillRect(friendPos.x,friendPos.y,22,22); ctx.fillStyle="#fff"; ctx.fillText(friendName, friendPos.x-5, friendPos.y-8);
- // emot bubble
- if(emotTimer>0){ ctx.font="24px Arial"; ctx.fillText(myEmot, myPos.x, myPos.y-25); emotTimer--; }
- if(friendEmotTimer>0){ ctx.font="24px Arial"; ctx.fillText(friendEmot, friendPos.x, friendPos.y-25); friendEmotTimer--; }
- ctx.fillStyle="#ff0000"; enemies.forEach(en=>{ctx.beginPath(); ctx.arc(en.x,en.y,14,0,Math.PI*2); ctx.fill();});
- if(myPos.x>730&&myPos.y<45&&friendPos.x>730&&friendPos.y<45&&open){ level++; if(level>10){ alert("🎉 TAMAT! "+myName+" & "+friendName+" MENANG!"); level=1; } document.getElementById("lvl").innerText=level; resetPos(); if(conn) conn.send({lvl:level}); }
- document.getElementById("gameStatus").innerText=open?"BUKA! KE EXIT!":(onMe||onFr?"Tunggu doi!":"Injak hijau berdua!");
+ ctx.fillStyle=open?"#00ff88":"#00cc66"; ctx.fillRect(map.b.x,map.b.y,map.b.w,map.b.h); ctx.fillStyle="#000"; ctx.font="bold 28px Arial"; ctx.fillText("●",map.b.x+12,map.b.y+35);
+ if(!open){ctx.fillStyle="#ff0022"; ctx.fillRect(390,map.b.y+50,20,70);}
+ ctx.fillStyle="gold"; ctx.fillRect(730,15,55,38); ctx.fillStyle="#000"; ctx.font="bold 13px Arial"; ctx.fillText("EXIT",738,39);
+ ctx.fillStyle="#ff4444"; ctx.fillRect(myPos.x,myPos.y,30,30); ctx.fillStyle="#fff"; ctx.font="bold 13px Arial"; ctx.fillText(myName,myPos.x-5,myPos.y-10);
+ ctx.fillStyle="#4488ff"; ctx.fillRect(friendPos.x,friendPos.y,30,30); ctx.fillText(herName,friendPos.x-5,friendPos.y-10);
+ if(myEmotT>0){ctx.font="28px Arial"; ctx.fillText(myEmot,myPos.x,myPos.y-25); myEmotT--;}
+ if(fEmotT>0){ctx.font="28px Arial"; ctx.fillText(fEmot,friendPos.x,friendPos.y-25); fEmotT--;}
+ ctx.fillStyle="#ff0000"; enemies.forEach(en=>{ctx.beginPath(); ctx.arc(en.x,en.y,15,0,Math.PI*2); ctx.fill(); ctx.fillStyle="#fff"; ctx.font="12px Arial"; ctx.fillText("x",en.x-4,en.y+4); ctx.fillStyle="#ff0000";});
+ if(myPos.x>730&&myPos.y<53&&friendPos.x>730&&friendPos.y<53&&open){
+  level++; if(level>10){alert("🎉 TAMAT! "+myName+" & "+herName+" BERHASIL! LDR GOALS! ❤️"); addChat("🎉 TAMAT! MENANG! GG SAYANG! ❤️❤️❤️","gold"); level=1;}
+  document.getElementById("lvl").innerText=level; myPos={x:40,y:40}; friendPos={x:740,y:380}; if(conn) conn.send({lvl:level});
+ }
+ document.getElementById("msg").innerText=open?"PINTU BUKA! KE EXIT KUNING!":(onMe||onFr?"Tunggu doi injak juga!":"Injak hijau berdua!");
  requestAnimationFrame(loop);
 }
-setBg(4);
+setBg(2);
 </script>
 </body>
 </html>
